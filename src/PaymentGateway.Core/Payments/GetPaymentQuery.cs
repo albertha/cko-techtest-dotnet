@@ -2,7 +2,7 @@
 
 namespace PaymentGateway.Core.Payments;
 
-using Core.Entities;
+using Entities;
 
 public class GetPaymentQuery : IRequest<Payment>
 {

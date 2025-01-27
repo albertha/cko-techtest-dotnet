@@ -1,7 +1,7 @@
 ﻿namespace PaymentGateway.Api.Tests;
 
-using Api.V1.Controllers;
-using Api.V1.Models.Responses;
+using V1.Controllers;
+using V1.Models.Responses;
 using Core.Enums;
 using Core.Entities;
 using Core.Interfaces;
@@ -10,7 +10,6 @@ using Infrastructure.Repositories;
 public class GetPaymentShould
 {
     private readonly HttpClient _client;
-    private readonly PaymentsRepository _paymentsRepository;
 
     private readonly Payment _payment;
     private readonly Random _random = new();
@@ -19,14 +18,14 @@ public class GetPaymentShould
     public GetPaymentShould()
     {
         _payment = Payment;
-        _paymentsRepository = new PaymentsRepository();
-        _paymentsRepository.Add(_payment);
+        PaymentsRepository paymentsRepository = new();
+        paymentsRepository.Add(_payment);
         
         var webApplicationFactory = new WebApplicationFactory<PaymentsController>().WithWebHostBuilder(builder =>
         {
             builder.ConfigureTestServices(services =>
             {
-                services.AddSingleton<IPaymentsRepository>(provider => _paymentsRepository);
+                services.AddSingleton<IPaymentsRepository>(provider => paymentsRepository);
             });
         });
 

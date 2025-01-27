@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Diagnostics;
 
 namespace PaymentGateway.Api.ExceptionHandlers;
 
-using Core.Exceptions;
-
 public class ArgumentExceptionHandler : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(
@@ -12,8 +10,7 @@ public class ArgumentExceptionHandler : IExceptionHandler
         Exception exception,
         CancellationToken cancellationToken)
     {
-        // if exception is not ArgumentException then skip exception handling
-        if (exception is not ArgumentException argumentException)
+        if (exception is not ArgumentException)
         {
             return false;
         }

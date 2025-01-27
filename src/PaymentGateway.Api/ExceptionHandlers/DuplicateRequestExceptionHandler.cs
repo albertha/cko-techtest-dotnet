@@ -12,8 +12,7 @@ public class DuplicateRequestExceptionHandler : IExceptionHandler
         Exception exception,
         CancellationToken cancellationToken)
     {
-        // if exception is not DuplicateRequestException then skip exception handling
-        if (exception is not DuplicateRequestException duplicateRequestException)
+        if (exception is not DuplicateRequestException)
         {
             return false;
         }

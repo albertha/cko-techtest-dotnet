@@ -11,7 +11,7 @@ public class PostPaymentResponse
     {
         Id = result.Id;
         Status = result.Status.ToString();
-        CardNumberLastFour = command.CardNumber[(command.CardNumber.Length - 4).. command.CardNumber.Length];
+        CardNumberLastFour = command.CardNumber[^4.. command.CardNumber.Length];
         ExpiryMonth = command.ExpiryMonth;
         ExpiryYear = command.ExpiryYear;
         Currency = command.Currency.ToString();
@@ -19,7 +19,7 @@ public class PostPaymentResponse
     }
 
     public Guid Id { get; set; }
-    public string Status { get; set; }
+    public string? Status { get; set; }
     public string CardNumberLastFour { get; set; }
     public int ExpiryMonth { get; set; }
     public int ExpiryYear { get; set; }

@@ -4,10 +4,10 @@ using System.Net;
 
 namespace PaymentGateway.Core.Payments;
 
-using Core.ApiClients;
-using Core.Entities;
-using Core.Enums;
-using Core.Interfaces;
+using ApiClients;
+using Entities;
+using Enums;
+using Interfaces;
 
 public class CreatePaymentCommandHandler(
     IMediator mediator,
@@ -31,13 +31,13 @@ public class CreatePaymentCommandHandler(
                 Cvv = command.Cvv
             };
             var apiResponse = await acquiringBankClient.PostAsync(request);
-            if (apiResponse.IsSuccessStatusCode)
-                result = apiResponse.Content!;
-
             if (apiResponse.StatusCode == HttpStatusCode.BadRequest)
                 return new CreatePaymentResult(command.Id, false);
 
             await apiResponse.EnsureSuccessStatusCodeAsync();
+
+            if (apiResponse.IsSuccessStatusCode)
+                result = apiResponse.Content!;
         }
         catch (Exception ex)
         {

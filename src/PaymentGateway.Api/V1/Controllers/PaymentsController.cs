@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace PaymentGateway.Api.V1.Controllers;
 
-using Api.V1.Models.Requests;
-using Api.V1.Models.Responses;
 using Core.Enums;
 using Core.Payments;
+using Models.Requests;
+using Models.Responses;
 
 [Authorize]
 [ApiController]
@@ -60,12 +60,11 @@ public class PaymentsController(
 
         // Route the command for handling via mediator
         var result = await mediator.Send(command, HttpContext.RequestAborted);
+        if (!result.Success)
+            return TypedResults.UnprocessableEntity("Payment could not be processed."); // TODO: use HTTP 402 Payment Required instead ?
 
         var response = new PostPaymentResponse(command, result);
-
-        return result.Success
-            ? TypedResults.Created<PostPaymentResponse>($"/api/v1/payments/{result.Id}", response)
-            : TypedResults.UnprocessableEntity("Payment could not be processed."); // TODO: use HTTP 402 Payment Required instead ?
+        return TypedResults.Created<PostPaymentResponse>($"/api/v1/payments/{result.Id}", response);
     }
 
     private string MerchantId => HttpContext.User?.Identity?.Name!; // The signed-in merchant user

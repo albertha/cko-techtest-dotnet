@@ -1,6 +1,6 @@
 ﻿namespace PaymentGateway.Core.Entities;
 
-using PaymentGateway.Core.Enums;
+using Enums;
 
 public class Payment(Guid id, string merchantId, string cardNumber, int expiryMonth, int expiryYear, Currency currency, int amount, string cvv, PaymentStatus status, string? authorizationCode)
 {
@@ -14,8 +14,8 @@ public class Payment(Guid id, string merchantId, string cardNumber, int expiryMo
     public string Cvv { get; } = cvv;
     public PaymentStatus Status { get; } = status;
     public string? AuthorizationCode { get; } = authorizationCode;
-    public string CardNumberLastFour => CardNumber[(CardNumber.Length - 4)..CardNumber.Length];
-    public string MaskedCardNumber => CardNumber[(CardNumber.Length - 4)..CardNumber.Length].PadLeft(CardNumber.Length, 'X');
+    public string CardNumberLastFour => CardNumber[^4..CardNumber.Length];
+    public string MaskedCardNumber => CardNumber[^4..CardNumber.Length].PadLeft(CardNumber.Length, 'X');
 
     public DateTime DateTimeCreated { get; } = DateTime.UtcNow;
 }

@@ -136,9 +136,9 @@ public class PostPaymentShould
     }
 
     [Theory]
-    [InlineData(AcquiringBankPaymentStatus.Authorized)]
-    [InlineData(AcquiringBankPaymentStatus.Declined)]
-    public async Task Return201_WhenPaymentSucessfullySentToAcquiringBank(AcquiringBankPaymentStatus status)
+    [InlineData(PaymentStatus.Authorized)]
+    [InlineData(PaymentStatus.Declined)]
+    public async Task Return201_WhenPaymentSuccessfullySentToAcquiringBank(PaymentStatus status)
     {
         SetupAcquiringBankResponse(status);
 
@@ -148,9 +148,9 @@ public class PostPaymentShould
     }
 
     [Theory]
-    [InlineData(AcquiringBankPaymentStatus.Authorized)]
-    [InlineData(AcquiringBankPaymentStatus.Declined)]
-    public async Task ReturnCorrectPaymentResponse_WhenPaymentSucessfullySentToAcquiringBank(AcquiringBankPaymentStatus status)
+    [InlineData(PaymentStatus.Authorized)]
+    [InlineData(PaymentStatus.Declined)]
+    public async Task ReturnCorrectPaymentResponse_WhenPaymentSuccessfullySentToAcquiringBank(PaymentStatus status)
     {
         SetupAcquiringBankResponse(status);
 
@@ -162,7 +162,7 @@ public class PostPaymentShould
             paymentResponse.Should().NotBeNull();
             paymentResponse.Id.Should().NotBeEmpty();
             paymentResponse.Status.Should().Be(status.ToString());
-            paymentResponse.CardNumberLastFour.Should().Be(ValidRequest.CardNumber[(ValidRequest.CardNumber.Length - 4).. ValidRequest.CardNumber.Length]);
+            paymentResponse.CardNumberLastFour.Should().Be(ValidRequest.CardNumber[^4.. ValidRequest.CardNumber.Length]);
             paymentResponse.ExpiryMonth.Should().Be(ValidRequest.ExpiryMonth);
             paymentResponse.ExpiryYear.Should().Be(ValidRequest.ExpiryYear);
             paymentResponse.Currency.Should().Be(ValidRequest.Currency.ToString());
@@ -173,7 +173,7 @@ public class PostPaymentShould
     [Fact]
     public async Task ReturnResourceLocation_WhenPaymentAuthorized()
     {
-        SetupAcquiringBankResponse(AcquiringBankPaymentStatus.Authorized);
+        SetupAcquiringBankResponse(PaymentStatus.Authorized);
 
         var response = await PostAsync(ValidRequest);
         var paymentResponse = await response.Content.ReadFromJsonAsync<PostPaymentResponse>();
@@ -186,7 +186,7 @@ public class PostPaymentShould
     [Fact]
     public async Task ReturnOriginalResponse_WhenRequestDuplicated_And_IdempotencyKeyIsSet()
     {
-        SetupAcquiringBankResponse(AcquiringBankPaymentStatus.Authorized);
+        SetupAcquiringBankResponse(PaymentStatus.Authorized);
 
         _client.DefaultRequestHeaders.Add("x-idempotency-key", "idempotencyKey");
 
@@ -206,7 +206,7 @@ public class PostPaymentShould
     [Fact]
     public async Task ReturnDifferentPaymentIds_WhenRequestDuplicated_And_IdempotencyKeyIsNotSet()
     {
-        SetupAcquiringBankResponse(AcquiringBankPaymentStatus.Authorized);
+        SetupAcquiringBankResponse(PaymentStatus.Authorized);
 
         _client.DefaultRequestHeaders.Add("x-idempotency-key", "");
 
@@ -226,7 +226,7 @@ public class PostPaymentShould
     [Fact]
     public async Task ReturnDifferentPaymentIds_WhenSameIdempotencyKeyIsUsed_ForDifferentMerchants()
     {
-        SetupAcquiringBankResponse(AcquiringBankPaymentStatus.Authorized);
+        SetupAcquiringBankResponse(PaymentStatus.Authorized);
 
         _client.DefaultRequestHeaders.Add("x-idempotency-key", "idempotencyKey");
 
@@ -278,12 +278,12 @@ public class PostPaymentShould
         return _client.PostAsync("/api/v1/payments/", new StringContent(JsonSerializer.Serialize(request), Encoding.UTF8, MediaTypeNames.Application.Json));
     }
 
-    private void SetupAcquiringBankResponse(AcquiringBankPaymentStatus status)
+    private void SetupAcquiringBankResponse(PaymentStatus status)
     {
         AcquiringBankPaymentResponse bankResponse = new()
         {
-            Authorized = status == AcquiringBankPaymentStatus.Authorized ? true : false,
-            AuthorizationCode = status == AcquiringBankPaymentStatus.Authorized ? Guid.NewGuid().ToString() : null
+            Authorized = status == PaymentStatus.Authorized,
+            AuthorizationCode = status == PaymentStatus.Authorized ? Guid.NewGuid().ToString() : null
         };
         var apiResponse = new ApiResponse<AcquiringBankPaymentResponse>(
             new HttpResponseMessage(HttpStatusCode.Created),

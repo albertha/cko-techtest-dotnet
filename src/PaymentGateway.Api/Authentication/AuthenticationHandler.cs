@@ -5,12 +5,13 @@ using System.Text.Encodings.Web;
 
 namespace PaymentGateway.Api.Authentication;
 
-public class AuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
+public class AuthenticationHandler(
+    IOptionsMonitor<AuthenticationSchemeOptions> options,
+    ILoggerFactory logger,
+    UrlEncoder encoder)
+    : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
 {
     private const string HeaderKey = "Authorization";
-
-    public AuthenticationHandler(IOptionsMonitor<AuthenticationSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder) 
-        : base(options, logger, encoder) { }
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {

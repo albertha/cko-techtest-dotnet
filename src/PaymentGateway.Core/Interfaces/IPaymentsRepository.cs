@@ -1,6 +1,6 @@
 ﻿namespace PaymentGateway.Core.Interfaces;
 
-using Core.Entities;
+using Entities;
 
 public interface IPaymentsRepository
 {

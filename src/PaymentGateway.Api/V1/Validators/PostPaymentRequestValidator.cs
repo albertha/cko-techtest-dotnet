@@ -2,9 +2,8 @@
 
 namespace PaymentGateway.Api.V1.Validators;
 
+using Core.Enums;
 using Models.Requests;
-
-using PaymentGateway.Core.Enums;
 
 public class PostPaymentRequestValidator : AbstractValidator<PostPaymentRequest>
 {

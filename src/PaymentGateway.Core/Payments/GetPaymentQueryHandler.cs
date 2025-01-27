@@ -2,8 +2,8 @@
 
 namespace PaymentGateway.Core.Payments;
 
-using Core.Entities;
-using Core.Interfaces;
+using Entities;
+using Interfaces;
 
 public class GetPaymentQueryHandler(IPaymentsRepository paymentsRepository)
     : IRequestHandler<GetPaymentQuery, Payment>

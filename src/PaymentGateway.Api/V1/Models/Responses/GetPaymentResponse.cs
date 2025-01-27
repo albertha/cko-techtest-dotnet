@@ -1,8 +1,6 @@
 ﻿namespace PaymentGateway.Api.V1.Models.Responses;
 
-using Core;
-
-using PaymentGateway.Core.Entities;
+using Core.Entities;
 
 public class GetPaymentResponse
 {

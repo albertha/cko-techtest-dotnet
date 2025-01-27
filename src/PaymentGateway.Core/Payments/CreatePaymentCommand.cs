@@ -2,7 +2,7 @@
 
 namespace PaymentGateway.Core.Payments;
 
-using Core.Enums;
+using Enums;
 
 public class CreatePaymentCommand(string merchantId, string cardNumber, int expiryMonth, int expiryYear, Currency currency, int amount, string cvv, string? idempotencyKey)
     : IRequest<CreatePaymentResult>
