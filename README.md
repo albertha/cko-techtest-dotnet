@@ -1,18 +1,16 @@
-# Instructions for candidates
-
-This is the .NET version of the Payment Gateway challenge. If you haven't already read this [README.md](https://github.com/cko-recruitment/) on the details of this exercise, please do so now. 
-
-## Template structure
-```
-src/
-    PaymentGateway.Api - a skeleton ASP.NET Core Web API
-test/
-    PaymentGateway.Api.Tests - an empty xUnit test project
-imposters/ - contains the bank simulator configuration. Don't change this
-
-.editorconfig - don't change this. It ensures a consistent set of rules for submissions when reformatting code
-docker-compose.yml - configures the bank simulator
-PaymentGateway.sln
-```
-
-Feel free to change the structure of the solution, use a different test library etc.
+## Implementation notes
+- API versioning added (v1)
+- POST Request validated using Fluent Validation
+- MediatR used to route the GET / POST requests to query / command handlers
+- Refit is used to auto generate a REST client for the acquiring bank API
+- Security features
+	 - authorization scheme to allow user to enter a merchant id to simulate an authentication flow
+	 - the GET payment endpoint checks the payment requested belongs to the merchant. Otherwise a NotFound is returned
+- Idempotent requests (optional) 
+     - The client may include an idempotency key in the request header to ensure the same POST request is not processed more than once
+     - The merchant id is prefixed to the idempotency key to allow different merchants to use the same idempotency key
+- Swagger UI configured with Authorize button which opens a dialog to enter the Authorization header value (merchant id))
+	 
+## Assumptions
+- GET payment returns a masked card number (not just the last four card digits)
+- No validation errors are returned when the POST request fails validation; only the phrase "Rejected"
