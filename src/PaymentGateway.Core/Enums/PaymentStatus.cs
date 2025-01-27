@@ -1,4 +1,4 @@
-namespace PaymentGateway.Api.Models;
+﻿namespace PaymentGateway.Core.Enums;
 
 public enum PaymentStatus
 {
